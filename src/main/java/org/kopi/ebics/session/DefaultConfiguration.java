@@ -117,7 +117,7 @@ public class DefaultConfiguration implements Configuration {
 
   @Override
   public Locale getLocale() {
-    return Locale.FRANCE;
+    return Locale.ENGLISH;
   }
 
   @Override
