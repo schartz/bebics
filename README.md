@@ -5,7 +5,7 @@ Bebics is an [EBICS](http://www.ebics.org/home-page/) client for Java.
 
 It is a fork of [this Sourceforge Project](https://sourceforge.net/p/ebics/)
 
-It i sunder development. Work is being done to make it configurable.  
+It is under development. Work is being done to make it configurable.  
 
 DO NOT use in production.
 
