@@ -10,8 +10,8 @@ import java.io.IOException;
 
 import org.kopi.ebics.exception.EbicsException;
 import org.kopi.ebics.interfaces.EbicsUser;
-import org.kopi.ebics.old.s001.OrderSignatureDataType;
-import org.kopi.ebics.old.s001.UserSignatureDataSigBookType;
+import org.kopi.ebics.schema.s001.OrderSignatureDataType;
+import org.kopi.ebics.schema.s001.UserSignatureDataSigBookType;
 
 
 /**

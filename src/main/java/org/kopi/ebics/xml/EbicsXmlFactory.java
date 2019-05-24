@@ -10,49 +10,49 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.xmlbeans.XmlObject;
-import org.kopi.ebics.old.h003.*;
-import org.kopi.ebics.old.h003.AuthenticationPubKeyInfoType;
-import org.kopi.ebics.old.h003.OrderDetailsType;
-import org.kopi.ebics.old.h003.DataEncryptionInfoType.EncryptionPubKeyDigest;
-import org.kopi.ebics.old.h003.DataTransferRequestType.DataEncryptionInfo;
-import org.kopi.ebics.old.h003.DataTransferRequestType.SignatureData;
-import org.kopi.ebics.old.h003.EbicsNoPubKeyDigestsRequestDocument.EbicsNoPubKeyDigestsRequest;
-import org.kopi.ebics.old.h003.EbicsRequestDocument.EbicsRequest;
-import org.kopi.ebics.old.h003.EbicsRequestDocument.EbicsRequest.Body.TransferReceipt;
-import org.kopi.ebics.old.h003.EbicsUnsecuredRequestDocument.EbicsUnsecuredRequest;
-import org.kopi.ebics.old.h003.EbicsUnsecuredRequestDocument.EbicsUnsecuredRequest.Body;
-import org.kopi.ebics.old.h003.EbicsUnsecuredRequestDocument.EbicsUnsecuredRequest.Header;
-import org.kopi.ebics.old.h003.EbicsUnsecuredRequestDocument.EbicsUnsecuredRequest.Body.DataTransfer;
-import org.kopi.ebics.old.h003.EbicsUnsecuredRequestDocument.EbicsUnsecuredRequest.Body.DataTransfer.OrderData;
-import org.kopi.ebics.old.h003.FDLOrderParamsType.DateRange;
-import org.kopi.ebics.old.h003.MutableHeaderType.SegmentNumber;
-import org.kopi.ebics.old.h003.ParameterDocument.Parameter;
-import org.kopi.ebics.old.h003.ParameterDocument.Parameter.Value;
-import org.kopi.ebics.old.h003.StaticHeaderOrderDetailsType.OrderType;
-import org.kopi.ebics.old.h003.StaticHeaderType.BankPubKeyDigests;
-import org.kopi.ebics.old.h003.StaticHeaderType.Product;
-import org.kopi.ebics.old.h003.StaticHeaderType.BankPubKeyDigests.Authentication;
-import org.kopi.ebics.old.h003.StaticHeaderType.BankPubKeyDigests.Encryption;
-import org.kopi.ebics.old.h003.TransactionPhaseType.Enum;
-import org.kopi.ebics.old.s001.OrderSignatureDataType;
-import org.kopi.ebics.old.s001.PubKeyValueType;
-import org.kopi.ebics.old.s001.SignaturePubKeyInfoType;
-import org.kopi.ebics.old.s001.SignaturePubKeyOrderDataDocument;
-import org.kopi.ebics.old.s001.SignaturePubKeyOrderDataType;
-import org.kopi.ebics.old.s001.UserSignatureDataDocument;
-import org.kopi.ebics.old.s001.UserSignatureDataSigBookType;
-import org.kopi.ebics.old.xmldsig.CanonicalizationMethodType;
-import org.kopi.ebics.old.xmldsig.DigestMethodType;
-import org.kopi.ebics.old.xmldsig.RSAKeyValueType;
-import org.kopi.ebics.old.xmldsig.ReferenceType;
-import org.kopi.ebics.old.xmldsig.SignatureMethodType;
-import org.kopi.ebics.old.xmldsig.SignatureType;
-import org.kopi.ebics.old.xmldsig.SignatureValueType;
-import org.kopi.ebics.old.xmldsig.SignedInfoDocument;
-import org.kopi.ebics.old.xmldsig.SignedInfoType;
-import org.kopi.ebics.old.xmldsig.TransformType;
-import org.kopi.ebics.old.xmldsig.TransformsType;
-import org.kopi.ebics.old.xmldsig.X509DataType;
+import org.kopi.ebics.schema.h003.*;
+import org.kopi.ebics.schema.h003.AuthenticationPubKeyInfoType;
+import org.kopi.ebics.schema.h003.OrderDetailsType;
+import org.kopi.ebics.schema.h003.DataEncryptionInfoType.EncryptionPubKeyDigest;
+import org.kopi.ebics.schema.h003.DataTransferRequestType.DataEncryptionInfo;
+import org.kopi.ebics.schema.h003.DataTransferRequestType.SignatureData;
+import org.kopi.ebics.schema.h003.EbicsNoPubKeyDigestsRequestDocument.EbicsNoPubKeyDigestsRequest;
+import org.kopi.ebics.schema.h003.EbicsRequestDocument.EbicsRequest;
+import org.kopi.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Body.TransferReceipt;
+import org.kopi.ebics.schema.h003.EbicsUnsecuredRequestDocument.EbicsUnsecuredRequest;
+import org.kopi.ebics.schema.h003.EbicsUnsecuredRequestDocument.EbicsUnsecuredRequest.Body;
+import org.kopi.ebics.schema.h003.EbicsUnsecuredRequestDocument.EbicsUnsecuredRequest.Header;
+import org.kopi.ebics.schema.h003.EbicsUnsecuredRequestDocument.EbicsUnsecuredRequest.Body.DataTransfer;
+import org.kopi.ebics.schema.h003.EbicsUnsecuredRequestDocument.EbicsUnsecuredRequest.Body.DataTransfer.OrderData;
+import org.kopi.ebics.schema.h003.FDLOrderParamsType.DateRange;
+import org.kopi.ebics.schema.h003.MutableHeaderType.SegmentNumber;
+import org.kopi.ebics.schema.h003.ParameterDocument.Parameter;
+import org.kopi.ebics.schema.h003.ParameterDocument.Parameter.Value;
+import org.kopi.ebics.schema.h003.StaticHeaderOrderDetailsType.OrderType;
+import org.kopi.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests;
+import org.kopi.ebics.schema.h003.StaticHeaderType.Product;
+import org.kopi.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests.Authentication;
+import org.kopi.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests.Encryption;
+import org.kopi.ebics.schema.h003.TransactionPhaseType.Enum;
+import org.kopi.ebics.schema.s001.OrderSignatureDataType;
+import org.kopi.ebics.schema.s001.PubKeyValueType;
+import org.kopi.ebics.schema.s001.SignaturePubKeyInfoType;
+import org.kopi.ebics.schema.s001.SignaturePubKeyOrderDataDocument;
+import org.kopi.ebics.schema.s001.SignaturePubKeyOrderDataType;
+import org.kopi.ebics.schema.s001.UserSignatureDataDocument;
+import org.kopi.ebics.schema.s001.UserSignatureDataSigBookType;
+import org.kopi.ebics.schema.xmldsig.CanonicalizationMethodType;
+import org.kopi.ebics.schema.xmldsig.DigestMethodType;
+import org.kopi.ebics.schema.xmldsig.RSAKeyValueType;
+import org.kopi.ebics.schema.xmldsig.ReferenceType;
+import org.kopi.ebics.schema.xmldsig.SignatureMethodType;
+import org.kopi.ebics.schema.xmldsig.SignatureType;
+import org.kopi.ebics.schema.xmldsig.SignatureValueType;
+import org.kopi.ebics.schema.xmldsig.SignedInfoDocument;
+import org.kopi.ebics.schema.xmldsig.SignedInfoType;
+import org.kopi.ebics.schema.xmldsig.TransformType;
+import org.kopi.ebics.schema.xmldsig.TransformsType;
+import org.kopi.ebics.schema.xmldsig.X509DataType;
 
 
 /**
@@ -551,7 +551,7 @@ public class EbicsXmlFactory {
    * @return the <code>AuthenticationPubKeyInfoType</code> XML object
    */
   public static AuthenticationPubKeyInfoType createAuthenticationPubKeyInfoType(String authenticationVersion,
-                                                                                org.kopi.ebics.old.h003.PubKeyValueType pubKeyValue,
+                                                                                org.kopi.ebics.schema.h003.PubKeyValueType pubKeyValue,
                                                                                 X509DataType x509Data)
   {
     AuthenticationPubKeyInfoType newAuthenticationPubKeyInfoType = AuthenticationPubKeyInfoType.Factory.newInstance();
@@ -570,7 +570,7 @@ public class EbicsXmlFactory {
    * @return the <code>EncryptionPubKeyInfoType</code> XML object
    */
   public static EncryptionPubKeyInfoType createEncryptionPubKeyInfoType(String encryptionVersion,
-      									org.kopi.ebics.old.h003.PubKeyValueType pubKeyValue,
+      									org.kopi.ebics.schema.h003.PubKeyValueType pubKeyValue,
       									X509DataType x509Data)
   {
     EncryptionPubKeyInfoType newEncryptionPubKeyInfoType = EncryptionPubKeyInfoType.Factory.newInstance();
@@ -587,8 +587,8 @@ public class EbicsXmlFactory {
    * @param timeStamp the current time stamp
    * @return the <code>org.kopi.ebics.schema.h003.PubKeyValueType</code> XML object
    */
-  public static org.kopi.ebics.old.h003.PubKeyValueType createH003PubKeyValueType(RSAKeyValueType rsaKeyValue, Calendar timeStamp) {
-    org.kopi.ebics.old.h003.PubKeyValueType newPubKeyValueType = org.kopi.ebics.old.h003.PubKeyValueType.Factory.newInstance();
+  public static org.kopi.ebics.schema.h003.PubKeyValueType createH003PubKeyValueType(RSAKeyValueType rsaKeyValue, Calendar timeStamp) {
+    org.kopi.ebics.schema.h003.PubKeyValueType newPubKeyValueType = org.kopi.ebics.schema.h003.PubKeyValueType.Factory.newInstance();
     newPubKeyValueType.setRSAKeyValue(rsaKeyValue);
     newPubKeyValueType.setTimeStamp(timeStamp);
 
