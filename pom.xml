@@ -69,12 +69,6 @@
       <version>RELEASE</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>RELEASE</version>
-      <scope>test</scope>
-    </dependency>
     <!-- https://mvnrepository.com/artifact/commons-httpclient/commons-httpclient -->
     <dependency>
       <groupId>commons-httpclient</groupId>
@@ -136,4 +130,11 @@
        </plugin>
     </plugins>
   </build>
+  <distributionManagement>
+    <repository>
+      <id>bintray-schartz-bebics</id>
+      <name>schartz-bebics</name>
+      <url>https://api.bintray.com/maven/schartz/bebics/bebics/;publish=1</url>
+    </repository>
+  </distributionManagement>
 </project>
