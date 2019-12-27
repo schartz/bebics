@@ -56,6 +56,16 @@ public class OrderType implements Serializable {
       return FDL;
     } else if (orderType.equals("HTD")) {
       return HTD;
+    } else if (orderType.equals("HAA")) {
+      return HAA;
+    } else if (orderType.equals("C52")) {
+      return C52;
+    } else if (orderType.equals("C53")) {
+      return C53;
+    } else if (orderType.equals("C54")) {
+      return C54;
+    } else if (orderType.equals("ZDF")) {
+      return ZDF;
     } else if (orderType.equals("HPD")) {
       return HPD;
     } else {
@@ -118,6 +128,31 @@ public class OrderType implements Serializable {
    */
   public static final OrderType		SPR ;
 
+  /**
+   * List all available order types
+   */
+  public static final OrderType     HAA;
+
+  /**
+   * Download Camt52
+   */
+  public static final OrderType     C52;
+
+  /**
+   * Download Camt53
+   */
+  public static final OrderType     C53;
+
+  /**
+   * Download Camt54
+   */
+  public static final OrderType     C54;
+
+  /**
+   * Download PDFs
+   */
+  public static final OrderType     ZDF;
+
   private static final long 		serialVersionUID = 17180027494776243L;
 
   static {
@@ -128,6 +163,11 @@ public class OrderType implements Serializable {
     INI = new OrderType("INI");
     FUL = new OrderType("FUL");
     FDL = new OrderType("FDL");
+    HAA = new OrderType("HAA");
+    C52 = new OrderType("C52");
+    C53 = new OrderType("C53");
+    C54 = new OrderType("C54");
+    ZDF = new OrderType("ZDF");
     SPR = new OrderType("SPR");
   }
 }

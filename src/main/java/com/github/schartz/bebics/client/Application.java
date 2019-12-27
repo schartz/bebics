@@ -6,16 +6,16 @@
 
 package com.github.schartz.bebics.client;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.net.URL;
 import java.security.GeneralSecurityException;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.Locale;
-import java.util.Map;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.util.*;
 
 import com.github.schartz.bebics.exception.EbicsException;
 import com.github.schartz.bebics.io.IOUtils;
@@ -32,6 +32,8 @@ import com.github.schartz.bebics.interfaces.EbicsBank;
 import com.github.schartz.bebics.interfaces.EbicsUser;
 import com.github.schartz.bebics.interfaces.InitLetter;
 import com.github.schartz.bebics.interfaces.PasswordCallback;
+
+import javax.xml.bind.DatatypeConverter;
 
 /**
  * The ebics client application. Performs necessary tasks to contact
@@ -484,7 +486,45 @@ public class Application {
 	             "Euro-Information",
 	             true,
 	             pwdHandler);
-    Product product = new Product("kopiLeft Dev 1.0", Locale.FRANCE, null);
+
+
+    System.out.println("****************************************************");
+
+
+
+
+
+    FileInputStream fin = new FileInputStream("/home/schartz/a005");
+    CertificateFactory f = CertificateFactory.getInstance("X.509");
+    X509Certificate certificate = (X509Certificate) f.generateCertificate(fin);
+    String thumbprint = getThumbprint(certificate);
+    System.out.println(thumbprint);
+    System.out.println(certificate.getSubjectX500Principal());
+    System.out.println(certificate.getSerialNumber());
+    System.out.println(certificate.getSigAlgName());
+
+    PublicKey rsapubkey = certificate.getPublicKey();
+
+    byte[] encoded = rsapubkey.getEncoded();
+    MessageDigest digest = MessageDigest.getInstance("SHA-256", "BC");
+    byte[] result = digest.digest(encoded);
+    String output = Base64.getEncoder().encodeToString(result);
+    System.out.println(DatatypeConverter.printHexBinary(result));
+
+
+
+
+
+
+    System.out.println("****************************************************");
+
+
+
+
+
+
+
+    /*Product product = new Product("kopiLeft Dev 1.0", Locale.FRANCE, null);
     appli.loadUser("EBIXQUAL", "EBICS", userId, pwdHandler);
     appli.sendHPBRequest(userId, product);
     appli.sendFile(System.getProperty("user.home") + File.separator + "test.txt", userId, product);
@@ -494,8 +534,18 @@ public class Application {
 	            OrderType.FDL,
 	            true,
 	            null,
-	            null);
+	            null);*/
     appli.quit();
+  }
+
+  private static String getThumbprint(X509Certificate cert)
+          throws NoSuchAlgorithmException, CertificateEncodingException {
+    MessageDigest md = MessageDigest.getInstance("SHA-256");
+    byte[] der = cert.getEncoded();
+    md.update(der);
+    byte[] digest = md.digest();
+    String digestHex = DatatypeConverter.printHexBinary(digest);
+    return digestHex.toLowerCase();
   }
 
   // --------------------------------------------------------------------

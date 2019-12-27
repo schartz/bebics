@@ -57,7 +57,9 @@ public class KeyUtil {
     try {
       random = SecureRandom.getInstance("SHA1PRNG");
       String pwd = Base64.encodeBase64String(random.generateSeed(5));
-
+      System.out.println("===============");
+      System.out.println(pwd);
+      System.out.println("===============");
       return pwd.substring(0, pwd.length() - 2);
     } catch (NoSuchAlgorithmException e) {
       return "changeit";
