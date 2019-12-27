@@ -11,18 +11,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.math.BigInteger;
 import java.security.GeneralSecurityException;
+import java.security.KeyFactory;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Provider;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.RSAPublicKeySpec;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bouncycastle.openssl.PEMReader;
 
 /**
@@ -79,7 +86,7 @@ public class KeyStoreManager {
    * @throws IOException
    */
   public void load(String path, char[] password)
-    throws GeneralSecurityException, IOException
+          throws GeneralSecurityException, IOException
   {
     keyStore = KeyStore.getInstance("PKCS12", "BC");
     this.password = password;
@@ -110,7 +117,7 @@ public class KeyStoreManager {
    * @throws IOException
    */
   public X509Certificate read(InputStream input, Provider provider)
-    throws CertificateException, IOException
+          throws CertificateException, IOException
   {
     X509Certificate		certificate;
 
@@ -131,12 +138,22 @@ public class KeyStoreManager {
    * @throws IOException
    */
   public RSAPublicKey getPublicKey(InputStream input)
-    throws GeneralSecurityException, IOException
+          throws GeneralSecurityException, IOException
   {
     X509Certificate		cert;
 
     cert = read(input, keyStore.getProvider());
     return (RSAPublicKey) cert.getPublicKey();
+  }
+
+  public RSAPublicKey getPublicKey(BigInteger publicExponent, BigInteger modulus)
+  {
+    try {
+      return (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(new RSAPublicKeySpec(modulus, publicExponent));
+    } catch (InvalidKeySpecException | NoSuchAlgorithmException ex) {
+      Logger.getLogger(KeyStoreManager.class.getName()).log(Level.SEVERE, null, ex);
+      return null;
+    }
   }
 
   /**
@@ -147,7 +164,7 @@ public class KeyStoreManager {
    * @throws IOException
    */
   public void setCertificateEntry(String alias, InputStream input)
-    throws GeneralSecurityException, IOException
+          throws GeneralSecurityException, IOException
   {
     keyStore.setCertificateEntry(alias, read(input, keyStore.getProvider()));
   }
@@ -157,11 +174,11 @@ public class KeyStoreManager {
    * @param output the output stream.
    */
   public void save(OutputStream output)
-    throws GeneralSecurityException, IOException
+          throws GeneralSecurityException, IOException
   {
     keyStore.store(output, password);
   }
-  
+
   /**
    * Returns the certificates contained in the key store.
    * @return the certificates contained in the key store.
@@ -178,7 +195,7 @@ public class KeyStoreManager {
    * @throws KeyStoreException
    */
   public Map<String, X509Certificate> read(KeyStore keyStore)
-    throws KeyStoreException
+          throws KeyStoreException
   {
     Map<String, X509Certificate>	certificates;
     Enumeration<String> 		enumeration;

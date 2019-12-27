@@ -16,7 +16,7 @@ import com.github.schartz.bebics.schema.h003.HPBResponseOrderDataType;
  * keys in encrypted mode. The user should decrypt with his encryption
  * key to have the bank public keys.
  *
- * @author schartz
+ * @author hachani
  *
  */
 public class HPBResponseOrderDataElement extends DefaultResponseElement {
@@ -44,6 +44,22 @@ public class HPBResponseOrderDataElement extends DefaultResponseElement {
    */
   public byte[] getBankE002Certificate() {
     return response.getEncryptionPubKeyInfo().getX509Data().getX509CertificateArray(0);
+  }
+
+  public byte[] getBankE002PublicKeyModulus() {
+    return response.getEncryptionPubKeyInfo().getPubKeyValue().getRSAKeyValue().getModulus();
+  }
+
+  public byte[] getBankE002PublicKeyExponent() {
+    return response.getEncryptionPubKeyInfo().getPubKeyValue().getRSAKeyValue().getExponent();
+  }
+
+  public byte[] getBankX002PublicKeyModulus() {
+    return response.getAuthenticationPubKeyInfo().getPubKeyValue().getRSAKeyValue().getModulus();
+  }
+
+  public byte[] getBankX002PublicKeyExponent() {
+    return response.getAuthenticationPubKeyInfo().getPubKeyValue().getRSAKeyValue().getExponent();
   }
 
   @Override

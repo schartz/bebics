@@ -10,6 +10,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.security.interfaces.RSAPublicKey;
 
@@ -138,13 +139,22 @@ public class KeyManagement {
     keystoreManager = new KeyStoreManager();
     path = session.getConfiguration().getKeystoreDirectory(session.getUser());
     keystoreManager.load("" , session.getUser().getPasswordCallback().getPassword());
-    e002PubKey = keystoreManager.getPublicKey(new ByteArrayInputStream(orderData.getBankE002Certificate()));
-    x002PubKey = keystoreManager.getPublicKey(new ByteArrayInputStream(orderData.getBankX002Certificate()));
-    session.getUser().getPartner().getBank().setBankKeys(e002PubKey, x002PubKey);
-    session.getUser().getPartner().getBank().setDigests(KeyUtil.getKeyDigest(e002PubKey), KeyUtil.getKeyDigest(x002PubKey));
-    keystoreManager.setCertificateEntry(session.getBankID() + "-E002", new ByteArrayInputStream(orderData.getBankE002Certificate()));
-    keystoreManager.setCertificateEntry(session.getBankID() + "-X002", new ByteArrayInputStream(orderData.getBankX002Certificate()));
-    keystoreManager.save(new FileOutputStream(path + File.separator + session.getBankID() + ".p12"));
+    System.out.println(this.session.getUser().getPartner().getBank().useCertificate());
+    if (this.session.getUser().getPartner().getBank().useCertificate()) {
+      e002PubKey = keystoreManager.getPublicKey(new ByteArrayInputStream(orderData.getBankE002Certificate()));
+      x002PubKey = keystoreManager.getPublicKey(new ByteArrayInputStream(orderData.getBankX002Certificate()));
+      this.session.getUser().getPartner().getBank().setBankKeys(e002PubKey, x002PubKey);
+      this.session.getUser().getPartner().getBank().setDigests(KeyUtil.getKeyDigest(e002PubKey), KeyUtil.getKeyDigest(x002PubKey));
+      keystoreManager.setCertificateEntry(this.session.getBankID() + "-E002", new ByteArrayInputStream(orderData.getBankE002Certificate()));
+      keystoreManager.setCertificateEntry(this.session.getBankID() + "-X002", new ByteArrayInputStream(orderData.getBankX002Certificate()));
+      keystoreManager.save(new FileOutputStream(path + File.separator + this.session.getBankID() + ".p12"));
+    } else {
+      e002PubKey = keystoreManager.getPublicKey(new BigInteger(orderData.getBankE002PublicKeyExponent()), new BigInteger(orderData.getBankE002PublicKeyModulus()));
+      x002PubKey = keystoreManager.getPublicKey(new BigInteger(orderData.getBankX002PublicKeyExponent()), new BigInteger(orderData.getBankX002PublicKeyModulus()));
+      this.session.getUser().getPartner().getBank().setBankKeys(e002PubKey, x002PubKey);
+      this.session.getUser().getPartner().getBank().setDigests(KeyUtil.getKeyDigest(e002PubKey), KeyUtil.getKeyDigest(x002PubKey));
+      keystoreManager.save(new FileOutputStream(path + File.separator + this.session.getBankID() + ".p12"));
+    }
   }
 
   /**

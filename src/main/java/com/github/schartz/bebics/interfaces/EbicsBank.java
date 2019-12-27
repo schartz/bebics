@@ -10,10 +10,14 @@ import java.io.Serializable;
 import java.net.URL;
 import java.security.interfaces.RSAPublicKey;
 
+import java.io.Serializable;
+import java.net.URL;
+import java.security.interfaces.RSAPublicKey;
+
 /**
  * Details about EBICS communication with a given bank.
  *
- * @author schartz
+ * @author Hachani
  *
  */
 public interface EbicsBank extends Serializable {
@@ -23,6 +27,16 @@ public interface EbicsBank extends Serializable {
    * @return the URL needed for communication to the bank.
    */
   public URL getURL();
+
+  /**
+   *
+   */
+  public boolean useCertificate();
+
+  /**
+   *
+   */
+  public void setUseCertificate(boolean useCertificate);
 
   /**
    * Returns the encryption key digest you have obtained from the bank.
