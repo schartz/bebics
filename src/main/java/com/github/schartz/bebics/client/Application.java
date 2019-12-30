@@ -91,13 +91,15 @@ public class Application {
   /**
    * Creates a new EBICS bank with the data you should have obtained from the bank.
    * @param url the bank URL
+   * @param url the bank name
    * @param hostId the bank host ID
+   * @param useCertificate does the bank use certificates ?
    * @return the created ebics bank
    */
-  public Bank createBank(URL url, String name, String hostId) {
+  public Bank createBank(URL url, String name, String hostId, boolean useCertificate) {
     Bank		bank;
 
-    bank = new Bank(url, name, hostId);
+    bank = new Bank(url, name, hostId, useCertificate);
     banks.put(hostId, bank);
     return bank;
   }
@@ -126,8 +128,9 @@ public class Application {
    * @param name the user name,
    * @param email the user email
    * @param country the user country
-   * @param organization
-   * @param saveCetificates save generated certificates?
+   * @param organization the user organization or company
+   * @param useCertificates does the bank use certificates ?
+   * @param saveCertificates save generated certificates?
    * @param passwordCallback a callback-handler that supplies us with the password.
    *                         This parameter can be null, in this case no password is used.
    */
@@ -140,25 +143,26 @@ public class Application {
                          String email,
                          String country,
                          String organization,
-                         boolean saveCetificates,
+                         boolean useCertificates,
+                         boolean saveCertificates,
                          PasswordCallback passwordCallback)
   {
     Bank			bank;
     Partner			partner;
     User			user;
-    InitLetter a005Letter;
+    InitLetter			a005Letter;
     InitLetter			x002Letter;
     InitLetter			e002Letter;
 
     configuration.getLogger().info(Messages.getString("user.create.info", Constants.APPLICATION_BUNDLE_NAME, userId));
 
-    bank = createBank(url, bankName, hostId);
+    bank = createBank(url, bankName, hostId, useCertificates);
     partner = createPartner(bank, partnerId);
     try {
       user = new User(partner, userId, name, email, country, organization, passwordCallback);
       createUserDirectories(user);
-      if (saveCetificates) {
-	user.saveUserCertificates(configuration.getKeystoreDirectory(user));
+      if (saveCertificates) {
+        user.saveUserCertificates(configuration.getKeystoreDirectory(user));
       }
       configuration.getSerializationManager().serialize(bank);
       configuration.getSerializationManager().serialize(partner);
@@ -238,12 +242,13 @@ public class Application {
    */
   public void sendINIRequest(String userId, Product product) {
     User			user;
-    EbicsSession session;
+    EbicsSession		session;
     KeyManagement		keyManager;
 
     configuration.getLogger().info(Messages.getString("ini.request.send", Constants.APPLICATION_BUNDLE_NAME, userId));
 
     user = users.get(userId);
+    user.setInitialized(false);
 
     if (user.isInitialized()) {
       configuration.getLogger().info(Messages.getString("user.already.initialized", Constants.APPLICATION_BUNDLE_NAME, userId));
@@ -278,6 +283,7 @@ public class Application {
 
     configuration.getLogger().info(Messages.getString("hia.request.send", Constants.APPLICATION_BUNDLE_NAME, userId));
     user = users.get(userId);
+    user.setInitializedHIA(false);
     if (user.isInitializedHIA()) {
       configuration.getLogger().info(Messages.getString("user.already.hia.initialized", Constants.APPLICATION_BUNDLE_NAME, userId));
       return;
@@ -428,24 +434,24 @@ public class Application {
   public void quit() {
     try {
       for (User user : users.values()) {
-	if (user.needsSave()) {
-	  configuration.getLogger().info(Messages.getString("app.quit.users", Constants.APPLICATION_BUNDLE_NAME, user.getUserId()));
-	  configuration.getSerializationManager().serialize(user);
-	}
+        if (user.needsSave()) {
+          configuration.getLogger().info(Messages.getString("app.quit.users", Constants.APPLICATION_BUNDLE_NAME, user.getUserId()));
+          configuration.getSerializationManager().serialize(user);
+        }
       }
 
       for (Partner partner : partners.values()) {
-	if (partner.needsSave()) {
-	  configuration.getLogger().info(Messages.getString("app.quit.partners", Constants.APPLICATION_BUNDLE_NAME, partner.getPartnerId()));
-	  configuration.getSerializationManager().serialize(partner);
-	}
+        if (partner.needsSave()) {
+          configuration.getLogger().info(Messages.getString("app.quit.partners", Constants.APPLICATION_BUNDLE_NAME, partner.getPartnerId()));
+          configuration.getSerializationManager().serialize(partner);
+        }
       }
 
       for (Bank bank : banks.values()) {
-	if (bank.needsSave()) {
-	  configuration.getLogger().info(Messages.getString("app.quit.banks", Constants.APPLICATION_BUNDLE_NAME, bank.getHostId()));
-	  configuration.getSerializationManager().serialize(bank);
-	}
+        if (bank.needsSave()) {
+          configuration.getLogger().info(Messages.getString("app.quit.banks", Constants.APPLICATION_BUNDLE_NAME, bank.getHostId()));
+          configuration.getSerializationManager().serialize(bank);
+        }
       }
     } catch (EbicsException e) {
       configuration.getLogger().info(Messages.getString("app.quit.error", Constants.APPLICATION_BUNDLE_NAME));
@@ -464,88 +470,45 @@ public class Application {
    * @param args program arguments
    */
   public static void main(String[] args) throws Exception {
-    DefaultConfiguration configuration;
+    DefaultConfiguration		configuration;
     PasswordCallback			pwdHandler;
     Application				appli;
     String				userId;
 
-    userId = "Schartz";
+    userId = "HEDI";
     configuration = new DefaultConfiguration();
-    pwdHandler = new UserPasswordHandler(userId, "2019");
+    pwdHandler = new UserPasswordHandler(userId, "2012");
     appli = new Application(configuration);
     appli.init();
 
-    appli.createUser(new URL("https://server-ebics.webank.fr:28103/WbkPortalFileTransfert/EbicsProtocol"),
-                     "VALERIAN",
-	             "EBIXQUAL",
-	             "EBICS",
-	             userId,
-	             "pebics",
-	             "pebics@domaine.fr",
-	             "org",
-	             "Euro-Information",
-	             true,
-	             pwdHandler);
-
-
-    System.out.println("****************************************************");
-
-
-
-
-
-    FileInputStream fin = new FileInputStream("/home/schartz/a005");
-    CertificateFactory f = CertificateFactory.getInstance("X.509");
-    X509Certificate certificate = (X509Certificate) f.generateCertificate(fin);
-    String thumbprint = getThumbprint(certificate);
-    System.out.println(thumbprint);
-    System.out.println(certificate.getSubjectX500Principal());
-    System.out.println(certificate.getSerialNumber());
-    System.out.println(certificate.getSigAlgName());
-
-    PublicKey rsapubkey = certificate.getPublicKey();
-
-    byte[] encoded = rsapubkey.getEncoded();
-    MessageDigest digest = MessageDigest.getInstance("SHA-256", "BC");
-    byte[] result = digest.digest(encoded);
-    String output = Base64.getEncoder().encodeToString(result);
-    System.out.println(DatatypeConverter.printHexBinary(result));
-
-
-
-
-
-
-    System.out.println("****************************************************");
-
-
-
-
-
-
-
-    /*Product product = new Product("kopiLeft Dev 1.0", Locale.FRANCE, null);
-    appli.loadUser("EBIXQUAL", "EBICS", userId, pwdHandler);
-    appli.sendHPBRequest(userId, product);
+//    appli.createUser(new URL("https://server-ebics.webank.fr:28103/WbkPortalFileTransfert/EbicsProtocol"),
+//                     "VALERIAN",
+//	             "EBIXQUAL",
+//	             "EBICS",
+//	             userId,
+//	             "pebics",
+//	             "pebics@domaine.fr",
+//	             "org",
+//	             "Euro-Information",
+//	             true,
+//	             pwdHandler);
+    Product product = new Product("kopiLeft Dev 1.0", Locale.FRANCE, null);
+    appli.loadUser("EBIXQUAL", "EBIX", userId, pwdHandler);
+//    appli.sendINIRequest(userId, product);
+//    appli.sendHIARequest(userId, product);
+//    appli.sendHPBRequest(userId, product);
     appli.sendFile(System.getProperty("user.home") + File.separator + "test.txt", userId, product);
-    appli.fetchFile(System.getProperty("user.home") + File.separator + "download.txt",
-	            userId,
-	            product,
-	            OrderType.FDL,
-	            true,
-	            null,
-	            null);*/
+    //for (int i = 0; i < 10000; i++) {
+//    appli.fetchFile(System.getProperty("user.home") + File.separator + "download.txt",
+//	            userId,
+//	            product,
+//	            OrderType.FDL,
+//	            true,
+//	            null,
+//	            null);
+//    appli.revokeSubscriber(userId, product);
     appli.quit();
-  }
-
-  private static String getThumbprint(X509Certificate cert)
-          throws NoSuchAlgorithmException, CertificateEncodingException {
-    MessageDigest md = MessageDigest.getInstance("SHA-256");
-    byte[] der = cert.getEncoded();
-    md.update(der);
-    byte[] digest = md.digest();
-    String digestHex = DatatypeConverter.printHexBinary(digest);
-    return digestHex.toLowerCase();
+    //}
   }
 
   // --------------------------------------------------------------------
