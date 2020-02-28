@@ -141,7 +141,12 @@ public class KeyManagement {
     keystoreManager.load("" , session.getUser().getPasswordCallback().getPassword());
     System.out.println("Check if bank uses cerificates");
     System.out.println(this.session.getUser().getPartner().getBank().useCertificate());
-    /*if (this.session.getUser().getPartner().getBank().useCertificate()) {
+
+    /*
+     * If Bank uses certificates than it is French implementation.
+     */
+
+    if (this.session.getUser().getPartner().getBank().useCertificate()) {
       System.out.println("Bank uses certificate");
       e002PubKey = keystoreManager.getPublicKey(new ByteArrayInputStream(orderData.getBankE002Certificate()));
       x002PubKey = keystoreManager.getPublicKey(new ByteArrayInputStream(orderData.getBankX002Certificate()));
@@ -149,26 +154,17 @@ public class KeyManagement {
       this.session.getUser().getPartner().getBank().setDigests(KeyUtil.getKeyDigest(e002PubKey), KeyUtil.getKeyDigest(x002PubKey));
       keystoreManager.setCertificateEntry(this.session.getBankID() + "-E002", new ByteArrayInputStream(orderData.getBankE002Certificate()));
       keystoreManager.setCertificateEntry(this.session.getBankID() + "-X002", new ByteArrayInputStream(orderData.getBankX002Certificate()));
-      keystoreManager.save(new FileOutputStream(path + File.separator + this.session.getBankID() + ".p12"));
     } else {
+
+      /*
+       * If you are here than it is Swiss/German implementation. Bank does not use the certificates.
+       */
       System.out.println("Bank does not use certificate");
       e002PubKey = keystoreManager.getPublicKey(new BigInteger(orderData.getBankE002PublicKeyExponent()), new BigInteger(orderData.getBankE002PublicKeyModulus()));
       x002PubKey = keystoreManager.getPublicKey(new BigInteger(orderData.getBankX002PublicKeyExponent()), new BigInteger(orderData.getBankX002PublicKeyModulus()));
       this.session.getUser().getPartner().getBank().setBankKeys(e002PubKey, x002PubKey);
       this.session.getUser().getPartner().getBank().setDigests(KeyUtil.getKeyDigest(e002PubKey), KeyUtil.getKeyDigest(x002PubKey));
-      keystoreManager.save(new FileOutputStream(path + File.separator + this.session.getBankID() + ".p12"));
-    }*/
-
-    /**
-     *
-     * This is an ugly hack!
-     * come back and fix it
-     * **/
-    System.out.println("Proceeding with a quick fix implementation!");
-    e002PubKey = keystoreManager.getPublicKey(new BigInteger(orderData.getBankE002PublicKeyExponent()), new BigInteger(orderData.getBankE002PublicKeyModulus()));
-    x002PubKey = keystoreManager.getPublicKey(new BigInteger(orderData.getBankX002PublicKeyExponent()), new BigInteger(orderData.getBankX002PublicKeyModulus()));
-    this.session.getUser().getPartner().getBank().setBankKeys(e002PubKey, x002PubKey);
-    this.session.getUser().getPartner().getBank().setDigests(KeyUtil.getKeyDigest(e002PubKey), KeyUtil.getKeyDigest(x002PubKey));
+    }
     keystoreManager.save(new FileOutputStream(path + File.separator + this.session.getBankID() + ".p12"));
   }
 
